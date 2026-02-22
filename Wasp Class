@@ -1,0 +1,89 @@
+import random
+import simplegui
+
+# define constants for the canvas
+CANVAS_WIDTH = 400
+CANVAS_HEIGHT = 400
+
+# define constants for the sprite
+Wasp_WIDTH = 50
+Wasp_HEIGHT = 50
+Wasp_SPEED = 2
+
+# load the wasp image
+wasp_image = simplegui.load_image("https://www.cs.rhul.ac.uk/home/zlac321/cs1822/Wasp.png")
+
+
+# define the Sprite class
+class Wasp:
+    def __init__(self,x,y):
+       # self.x = random.randrange(Wasp_WIDTH, CANVAS_WIDTH - Wasp_WIDTH)
+      #  self.y = 0
+       # self.vel = Wasp_SPEED
+       # self.direction = 1 if random.random() < 0.5 else -1
+        self.x = x
+        self.y = y
+        self.direction = random.choice(["left", "right", "up", "down"])
+
+    def update(self):
+     #   self.x += self.vel * self.direction
+      #  if self.x <= Wasp_WIDTH or self.x >= Wasp_WIDTH - Wasp_WIDTH:
+      #      self.direction = -self.direction
+     # Update position based on direction
+        if self.direction == "left":
+            self.x -= Wasp_SPEED
+        elif self.direction == "right":
+            self.x += Wasp_SPEED
+        elif self.direction == "up":
+            self.y -= Wasp_SPEED
+        elif self.direction == "down":
+            self.y += Wasp_SPEED
+        
+        # Check if sprite is off the screen, and wrap around if necessary
+        if self.x < -Wasp_WIDTH / 2:
+            self.x = CANVAS_WIDTH + Wasp_WIDTH / 2
+        elif self.x > CANVAS_WIDTH + Wasp_WIDTH / 2:
+            self.x = -Wasp_WIDTH / 2
+        elif self.y < -Wasp_HEIGHT / 2:
+            self.y = CANVAS_HEIGHT + Wasp_HEIGHT / 2
+        elif self.y > CANVAS_HEIGHT + Wasp_HEIGHT / 2:
+            self.y = -Wasp_HEIGHT / 2
+
+        # Randomly change direction
+        if random.random() < 0.05:  # adjust the probability as desired
+            self.direction = random.choice(["left", "right", "up", "down"])
+
+    def check_collision(self,player):
+        if self.x + Wasp_WIDTH >= self.player.x and self.x <= self.player.x + self.player.width and \
+        self.y + Wasp_HEIGHT >= self.player.y and self.y <= self.player.y + self.player.height:
+            return True
+        return False
+
+
+    def draw(self, canvas):
+        canvas.draw_image(wasp_image, (16, 16), (32, 32),
+                          (self.x, self.y), (Wasp_WIDTH, Wasp_HEIGHT))
+                  
+
+
+# define the draw handler
+def draw(canvas):
+    sprite.draw(canvas)
+    
+    
+# define the update handler
+def update():
+    sprite.update()
+
+# create a Sprite object
+sprite = Wasp(100,100)
+
+# create the frame and set the handlers
+frame = simplegui.create_frame("Sprite Demo", CANVAS_WIDTH, CANVAS_HEIGHT)
+frame.set_draw_handler(draw)
+timer = simplegui.create_timer(10, update)
+timer.start()
+
+# start the frame
+frame.start()
+print(wasp_image.get_width(), wasp_image.get_height())

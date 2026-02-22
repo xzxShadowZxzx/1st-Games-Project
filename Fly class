@@ -1,0 +1,37 @@
+class Fly:
+    def __init__(self, platform_list, player, canvas_width, canvas_height):
+        self.platform_list = platform_list
+        self.player = player
+        self.canvas_width = canvas_width
+        self.canvas_height = canvas_height
+        
+        self.width = 50
+        self.height = 50
+        
+        self.image = simplegui.load_image("https://www.cs.rhul.ac.uk/home/zlac321/cs1822/Fly.png")
+        
+        self.spawn_on_platform()
+    
+    def spawn_on_platform(self):
+        # choose a random platform
+        platform = random.choice(self.platform_list)
+        
+        # set x position to a random value within the platform's bounds
+        self.x = random.randint(platform.x + 5, platform.x + platform.width - self.width - 5)
+        # set y position to be on top of the platform
+        self.y = platform.y - self.height
+        
+    def draw(self, canvas):
+        canvas.draw_image(self.image, (self.width/2, self.height/2), (self.width, self.height), 
+                          (self.x + self.width/2, self.y + self.height/2), (self.width, self.height))
+        
+    def update(self):
+        if self.check_collision():
+            self.player.lives -= 1
+            self.spawn_on_platform()
+        
+    def check_collision(self):
+        if self.x + self.width >= self.player.x and self.x <= self.player.x + self.player.width and \
+        self.y + self.height >= self.player.y and self.y <= self.player.y + self.player.height:
+            return True
+        return False
